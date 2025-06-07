@@ -124,8 +124,9 @@ const toggleSidebar = () => {
 }
 
   const sidebarSections = [
-    { id: 1, title: "Feymann Technique", icon: "🧠" },
-    { id: 2, title: "Active Recall", icon: "🔄" },
+    { id: 1, title: "Home", icon: "🏠", to: "/"},
+    { id: 2, title: "Feynman Technique", icon: "🧠", to: "/feynman" },
+    { id: 3, title: "Active Recall", icon: "🔄", to: "/active-recall"},
   ];
   const sectionClasses =
     "my-3 hover:cursor-pointer hover:bg-[#F0EAD6] p-2 rounded-lg transition-colors duration-200";
