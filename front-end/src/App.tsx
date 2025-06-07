@@ -1,19 +1,21 @@
 import { useState } from "react";
 import "./App.css";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
-import {
-  Sidebar,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "./components/ui/sidebar";
+import Sidebar from "@/custom-components/sidebar";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "./components/ui/dropdown-menu";
+// import { ChevronDown } from "lucide-react";
+// import {
+//   Sidebar,
+//   SidebarHeader,
+//   SidebarMenu,
+//   SidebarMenuButton,
+//   SidebarMenuItem,
+// } from "./components/ui/sidebar";
+
 
 
 
@@ -23,7 +25,7 @@ function App() {
   return (
     <div>
       <div>
-        <Sidebar>
+        {/* <Sidebar>
           <SidebarHeader>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -46,7 +48,9 @@ function App() {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarHeader>
-        </Sidebar>
+        </Sidebar> */}
+
+        <Sidebar />
       </div>
     </div>
   );
