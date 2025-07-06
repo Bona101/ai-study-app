@@ -114,7 +114,7 @@
 
 
 import React, { useState } from "react";
-
+import { Link } from '@tanstack/react-router';
 
 
 
@@ -122,11 +122,14 @@ function Sidebar() {
 const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
 }
+const openSidebar = () => {
+    setIsSidebarOpen(true);
+}
 
   const sidebarSections = [
     { id: 1, title: "Home", icon: "🏠", to: "/"},
-    { id: 2, title: "Feynman Technique", icon: "🧠", to: "/feynman" },
-    { id: 3, title: "Active Recall", icon: "🔄", to: "/active-recall"},
+    { id: 2, title: "Feynman Technique", icon: "🧠", to: "/study-techniques/feynmann" },
+    { id: 3, title: "Active Recall", icon: "🔄", to: "/study-techniques/active-recall"},
   ];
   const sectionClasses =
     "my-3 hover:cursor-pointer hover:bg-[#F0EAD6] p-2 rounded-lg transition-colors duration-200";
@@ -136,10 +139,13 @@ const toggleSidebar = () => {
     <div className={`bg-[#FFFBF7] text-[#000000] h-screen p-4 flex flex-col justify-between ${isSidebarOpen ? "w-64" : "w-16"} `}>
       <div>
         {sidebarSections.map((section) => (
-          <div className={`${sectionClasses} flex gap-1`} key={section.id}>
+          <Link to={section.to} onClick={openSidebar}><div className={`${sectionClasses} flex gap-1`} key={section.id}>
             <div>{section.icon}</div>
             <div>{isSidebarOpen && section.title}</div>
           </div>
+            </Link>
+
+          // <Link />
         ))}
       </div>
 
