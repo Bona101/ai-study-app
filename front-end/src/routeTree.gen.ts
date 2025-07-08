@@ -8,105 +8,39 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as StudyTechniquesRouteImport } from './routes/study-techniques'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as StudyTechniquesFeynmannRouteImport } from './routes/study-techniques/feynmann'
+import { Route as StudyTechniquesActiveRecallRouteImport } from './routes/study-techniques/active-recall'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as StudyTechniquesImport } from './routes/study-techniques'
-import { Route as AboutImport } from './routes/about'
-import { Route as IndexImport } from './routes/index'
-import { Route as StudyTechniquesFeynmannImport } from './routes/study-techniques/feynmann'
-import { Route as StudyTechniquesActiveRecallImport } from './routes/study-techniques/active-recall'
-
-// Create/Update Routes
-
-const StudyTechniquesRoute = StudyTechniquesImport.update({
+const StudyTechniquesRoute = StudyTechniquesRouteImport.update({
   id: '/study-techniques',
   path: '/study-techniques',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AboutRoute = AboutImport.update({
+const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const IndexRoute = IndexImport.update({
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const StudyTechniquesFeynmannRoute = StudyTechniquesFeynmannImport.update({
+const StudyTechniquesFeynmannRoute = StudyTechniquesFeynmannRouteImport.update({
   id: '/feynmann',
   path: '/feynmann',
   getParentRoute: () => StudyTechniquesRoute,
 } as any)
-
 const StudyTechniquesActiveRecallRoute =
-  StudyTechniquesActiveRecallImport.update({
+  StudyTechniquesActiveRecallRouteImport.update({
     id: '/active-recall',
     path: '/active-recall',
     getParentRoute: () => StudyTechniquesRoute,
   } as any)
-
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
-    '/study-techniques': {
-      id: '/study-techniques'
-      path: '/study-techniques'
-      fullPath: '/study-techniques'
-      preLoaderRoute: typeof StudyTechniquesImport
-      parentRoute: typeof rootRoute
-    }
-    '/study-techniques/active-recall': {
-      id: '/study-techniques/active-recall'
-      path: '/active-recall'
-      fullPath: '/study-techniques/active-recall'
-      preLoaderRoute: typeof StudyTechniquesActiveRecallImport
-      parentRoute: typeof StudyTechniquesImport
-    }
-    '/study-techniques/feynmann': {
-      id: '/study-techniques/feynmann'
-      path: '/feynmann'
-      fullPath: '/study-techniques/feynmann'
-      preLoaderRoute: typeof StudyTechniquesFeynmannImport
-      parentRoute: typeof StudyTechniquesImport
-    }
-  }
-}
-
-// Create and export the route tree
-
-interface StudyTechniquesRouteChildren {
-  StudyTechniquesActiveRecallRoute: typeof StudyTechniquesActiveRecallRoute
-  StudyTechniquesFeynmannRoute: typeof StudyTechniquesFeynmannRoute
-}
-
-const StudyTechniquesRouteChildren: StudyTechniquesRouteChildren = {
-  StudyTechniquesActiveRecallRoute: StudyTechniquesActiveRecallRoute,
-  StudyTechniquesFeynmannRoute: StudyTechniquesFeynmannRoute,
-}
-
-const StudyTechniquesRouteWithChildren = StudyTechniquesRoute._addFileChildren(
-  StudyTechniquesRouteChildren,
-)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -115,7 +49,6 @@ export interface FileRoutesByFullPath {
   '/study-techniques/active-recall': typeof StudyTechniquesActiveRecallRoute
   '/study-techniques/feynmann': typeof StudyTechniquesFeynmannRoute
 }
-
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
@@ -123,16 +56,14 @@ export interface FileRoutesByTo {
   '/study-techniques/active-recall': typeof StudyTechniquesActiveRecallRoute
   '/study-techniques/feynmann': typeof StudyTechniquesFeynmannRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
+  __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/study-techniques': typeof StudyTechniquesRouteWithChildren
   '/study-techniques/active-recall': typeof StudyTechniquesActiveRecallRoute
   '/study-techniques/feynmann': typeof StudyTechniquesFeynmannRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
@@ -157,55 +88,71 @@ export interface FileRouteTypes {
     | '/study-techniques/feynmann'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   StudyTechniquesRoute: typeof StudyTechniquesRouteWithChildren
 }
 
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/study-techniques': {
+      id: '/study-techniques'
+      path: '/study-techniques'
+      fullPath: '/study-techniques'
+      preLoaderRoute: typeof StudyTechniquesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/study-techniques/feynmann': {
+      id: '/study-techniques/feynmann'
+      path: '/feynmann'
+      fullPath: '/study-techniques/feynmann'
+      preLoaderRoute: typeof StudyTechniquesFeynmannRouteImport
+      parentRoute: typeof StudyTechniquesRoute
+    }
+    '/study-techniques/active-recall': {
+      id: '/study-techniques/active-recall'
+      path: '/active-recall'
+      fullPath: '/study-techniques/active-recall'
+      preLoaderRoute: typeof StudyTechniquesActiveRecallRouteImport
+      parentRoute: typeof StudyTechniquesRoute
+    }
+  }
+}
+
+interface StudyTechniquesRouteChildren {
+  StudyTechniquesActiveRecallRoute: typeof StudyTechniquesActiveRecallRoute
+  StudyTechniquesFeynmannRoute: typeof StudyTechniquesFeynmannRoute
+}
+
+const StudyTechniquesRouteChildren: StudyTechniquesRouteChildren = {
+  StudyTechniquesActiveRecallRoute: StudyTechniquesActiveRecallRoute,
+  StudyTechniquesFeynmannRoute: StudyTechniquesFeynmannRoute,
+}
+
+const StudyTechniquesRouteWithChildren = StudyTechniquesRoute._addFileChildren(
+  StudyTechniquesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   StudyTechniquesRoute: StudyTechniquesRouteWithChildren,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/about",
-        "/study-techniques"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/about": {
-      "filePath": "about.tsx"
-    },
-    "/study-techniques": {
-      "filePath": "study-techniques.tsx",
-      "children": [
-        "/study-techniques/active-recall",
-        "/study-techniques/feynmann"
-      ]
-    },
-    "/study-techniques/active-recall": {
-      "filePath": "study-techniques/active-recall.tsx",
-      "parent": "/study-techniques"
-    },
-    "/study-techniques/feynmann": {
-      "filePath": "study-techniques/feynmann.tsx",
-      "parent": "/study-techniques"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

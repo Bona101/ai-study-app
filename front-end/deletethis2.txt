@@ -1,0 +1,3 @@
+npm install @tanstack/react-router @tanstack/router-devtools axios
+npm install -D @tanstack/router-generator @types/react @types/react-dom @types/axios @types/node # @types/node is useful for process.env related types
+npm uninstall @tanstack/router-generator @types/react @types/react-dom @types/axios @types/node -D
