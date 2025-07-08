@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StudyTechniquesRouteImport } from './routes/study-techniques'
+import { Route as StartRouteImport } from './routes/start'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StudyTechniquesFeynmannRouteImport } from './routes/study-techniques/feynmann'
@@ -18,6 +20,16 @@ import { Route as StudyTechniquesActiveRecallRouteImport } from './routes/study-
 const StudyTechniquesRoute = StudyTechniquesRouteImport.update({
   id: '/study-techniques',
   path: '/study-techniques',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StartRoute = StartRouteImport.update({
+  id: '/start',
+  path: '/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -45,6 +57,8 @@ const StudyTechniquesActiveRecallRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/start': typeof StartRoute
   '/study-techniques': typeof StudyTechniquesRouteWithChildren
   '/study-techniques/active-recall': typeof StudyTechniquesActiveRecallRoute
   '/study-techniques/feynmann': typeof StudyTechniquesFeynmannRoute
@@ -52,6 +66,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/start': typeof StartRoute
   '/study-techniques': typeof StudyTechniquesRouteWithChildren
   '/study-techniques/active-recall': typeof StudyTechniquesActiveRecallRoute
   '/study-techniques/feynmann': typeof StudyTechniquesFeynmannRoute
@@ -60,6 +76,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/login': typeof LoginRoute
+  '/start': typeof StartRoute
   '/study-techniques': typeof StudyTechniquesRouteWithChildren
   '/study-techniques/active-recall': typeof StudyTechniquesActiveRecallRoute
   '/study-techniques/feynmann': typeof StudyTechniquesFeynmannRoute
@@ -69,6 +87,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/login'
+    | '/start'
     | '/study-techniques'
     | '/study-techniques/active-recall'
     | '/study-techniques/feynmann'
@@ -76,6 +96,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/login'
+    | '/start'
     | '/study-techniques'
     | '/study-techniques/active-recall'
     | '/study-techniques/feynmann'
@@ -83,6 +105,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/login'
+    | '/start'
     | '/study-techniques'
     | '/study-techniques/active-recall'
     | '/study-techniques/feynmann'
@@ -91,6 +115,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  LoginRoute: typeof LoginRoute
+  StartRoute: typeof StartRoute
   StudyTechniquesRoute: typeof StudyTechniquesRouteWithChildren
 }
 
@@ -101,6 +127,20 @@ declare module '@tanstack/react-router' {
       path: '/study-techniques'
       fullPath: '/study-techniques'
       preLoaderRoute: typeof StudyTechniquesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/start': {
+      id: '/start'
+      path: '/start'
+      fullPath: '/start'
+      preLoaderRoute: typeof StartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -151,6 +191,8 @@ const StudyTechniquesRouteWithChildren = StudyTechniquesRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  LoginRoute: LoginRoute,
+  StartRoute: StartRoute,
   StudyTechniquesRoute: StudyTechniquesRouteWithChildren,
 }
 export const routeTree = rootRouteImport

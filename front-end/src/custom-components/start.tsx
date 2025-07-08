@@ -1,12 +1,12 @@
 // src/App.tsx
 import React, { type FC } from 'react';
-import Navbar from './navbar';
-import './App.css';
+// import Navbar from './navbar';
+// import './App.css';
 
 const Start: FC = () => {
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
       <div style={{ padding: '2rem' }}>
         <h1>Welcome to the Gemini Chat App!</h1>
         <p>This is the main application area.</p>
