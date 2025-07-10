@@ -30,7 +30,7 @@ export const Route = createRootRoute({
       <div className="p-2 flex gap-2">
 
         {/* <Sidebar /> */}
-      <div>
+      <div className='flex-grow'>
         <Outlet />
         </div> {/* This is where your nested routes will render */}
       </div>

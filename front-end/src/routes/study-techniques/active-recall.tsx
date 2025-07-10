@@ -3,119 +3,10 @@ import { createFileRoute } from '@tanstack/react-router'
 import FlashcardApp from '@/custom-components/card-interface';
 
 export const Route = createFileRoute('/study-techniques/active-recall')({
-  component: RouteComponent2,
+  component: activeRecallComponent,
 })
 
-function RouteComponent() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [currentFileId, setCurrentFileId] = useState<string>('');
-  const [output, setOutput] = useState<string>('');
-  const [isError, setIsError] = useState<boolean>(false);
-  const [isUploading, setIsUploading] = useState<boolean>(false);
-
-  const backendUrl = 'http://localhost:5000';
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedFile(event.target.files?.[0] || null);
-  };
-
-  const uploadFile = async (): Promise<void> => {
-    if (!selectedFile) {
-      alert('Please select a file first!');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('mediaFile', selectedFile); // 'mediaFile' must match the name in upload.single()
-
-    setOutput('Uploading file...');
-    setCurrentFileId('Uploading...');
-    setIsUploading(true);
-    setIsError(false);
-
-    try {
-      const response = await fetch(`${backendUrl}/upload`, {
-        method: 'POST',
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setCurrentFileId(data.fileId);
-        setOutput(`File uploaded to Gemini! File ID: ${data.fileId}`);
-        console.log('Upload success:', data);
-      } else {
-        setOutput(`Error: ${data.error || 'Unknown upload error'}`);
-        setIsError(true);
-        console.error('Upload error:', data);
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      setOutput(`Network error during upload: ${errorMessage}`);
-      setIsError(true);
-      console.error('Fetch error during upload:', error);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">File Upload</h2>
-      
-      <div className="mb-4">
-        <input
-          type="file"
-          onChange={handleFileChange}
-          accept="image/*,audio/*,video/*,application/pdf"
-          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          disabled={isUploading}
-        />
-      </div>
-
-      <button
-        onClick={uploadFile}
-        disabled={isUploading || !selectedFile}
-        className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${
-          isUploading || !selectedFile
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-blue-500 text-white hover:bg-blue-600'
-        }`}
-      >
-        {isUploading ? 'Uploading...' : 'Upload File'}
-      </button>
-
-      {currentFileId && (
-        <div className="mt-4 p-3 bg-gray-100 rounded-md">
-          <p className="text-sm font-medium text-gray-700">File ID:</p>
-          <p className="text-sm text-gray-600 break-all">{currentFileId}</p>
-        </div>
-      )}
-
-      {output && (
-        <div className={`mt-4 p-3 rounded-md ${
-          isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
-        }`}>
-          <p className="text-sm">{output}</p>
-        </div>
-      )}
-
-      {selectedFile && (
-        <div className="mt-4 p-3 bg-blue-50 rounded-md">
-          <p className="text-sm font-medium text-blue-700">Selected File:</p>
-          <p className="text-sm text-blue-600">{selectedFile.name}</p>
-          <p className="text-xs text-blue-500">{(selectedFile.size / 1024).toFixed(2)} KB</p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-
-
-
-function RouteComponent2() {
+function activeRecallComponent() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [currentFileId, setCurrentFileId] = useState<string>('');
   const [output, setOutput] = useState<string>('');
@@ -182,6 +73,8 @@ function RouteComponent2() {
         setIsError(true);
         console.error('Upload error:', data);
       }
+
+      sendPrompt(data.fileId);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       setOutput(`Network error during upload: ${errorMessage}`);
@@ -195,7 +88,7 @@ function RouteComponent2() {
 
   };
 
-  const sendPrompt = async () => {
+  const sendPrompt = async (id: string) => {
     setPromptStatus('Sending prompt...');
     setGeminiResponse('');
 
@@ -207,7 +100,7 @@ function RouteComponent2() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          fileId: currentFileId,
+          fileId: id,
           prompt: promptText,
         }),
       });
@@ -237,7 +130,7 @@ function RouteComponent2() {
 
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className=" mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">File Upload</h2>
 
       <div className="mb-4">
@@ -288,28 +181,23 @@ function RouteComponent2() {
       {geminiResponse && (
                     <div className="response">
                         <h3>Gemini Response:</h3>
-                        <pre>{geminiResponse}</pre>
-                        <p>
+                        {/* <pre>{geminiResponse}</pre> */}
+                        {/* <p>
                           {geminiResponse}
-                        </p>
+                        </p> */}
                         {/* <button onClick={handleExport} style={{ marginTop: '10px' }}>Export Response to Word</button> */}
                     </div>
                 )}
 
-                <button onClick={sendPrompt} className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
+                {/* <button onClick={sendPrompt} className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
             : 'bg-blue-500 text-white hover:bg-blue-600'
-          }`}>sendPrompt</button>
+          }`}>sendPrompt</button> */}
 
 
           {flashcards[0] && (<FlashcardApp cards={flashcards}/>)}
 
-          <div>
-            hy
-            kj
-            jd jd dj    dfkjfdkj
-            fdjkhs
-          </div>
+          
     </div>
   );
 }
@@ -348,14 +236,3 @@ function parseFlashcardString(str: string) {
 
     return flashcards;
 }
-
-
-
-
-/*
-Expected output:
-[
-  { id: 1, question: 'What is a biscuit?', answer: 'A biscuit is a snack' },
-  { id: 2, question: 'What is a house?', answer: 'A house is a building' }
-]
-*/
