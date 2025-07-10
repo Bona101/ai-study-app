@@ -12,7 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as StudyTechniquesRouteImport } from './routes/study-techniques'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as StudyTechniquesFeynmannRouteImport } from './routes/study-techniques/feynmann'
+import { Route as StudyTechniquesFeynmanRouteImport } from './routes/study-techniques/feynman'
 import { Route as StudyTechniquesActiveRecallRouteImport } from './routes/study-techniques/active-recall'
 
 const StudyTechniquesRoute = StudyTechniquesRouteImport.update({
@@ -30,9 +30,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const StudyTechniquesFeynmannRoute = StudyTechniquesFeynmannRouteImport.update({
-  id: '/feynmann',
-  path: '/feynmann',
+const StudyTechniquesFeynmanRoute = StudyTechniquesFeynmanRouteImport.update({
+  id: '/feynman',
+  path: '/feynman',
   getParentRoute: () => StudyTechniquesRoute,
 } as any)
 const StudyTechniquesActiveRecallRoute =
@@ -47,14 +47,14 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/study-techniques': typeof StudyTechniquesRouteWithChildren
   '/study-techniques/active-recall': typeof StudyTechniquesActiveRecallRoute
-  '/study-techniques/feynmann': typeof StudyTechniquesFeynmannRoute
+  '/study-techniques/feynman': typeof StudyTechniquesFeynmanRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/study-techniques': typeof StudyTechniquesRouteWithChildren
   '/study-techniques/active-recall': typeof StudyTechniquesActiveRecallRoute
-  '/study-techniques/feynmann': typeof StudyTechniquesFeynmannRoute
+  '/study-techniques/feynman': typeof StudyTechniquesFeynmanRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,7 +62,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/study-techniques': typeof StudyTechniquesRouteWithChildren
   '/study-techniques/active-recall': typeof StudyTechniquesActiveRecallRoute
-  '/study-techniques/feynmann': typeof StudyTechniquesFeynmannRoute
+  '/study-techniques/feynman': typeof StudyTechniquesFeynmanRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -71,21 +71,21 @@ export interface FileRouteTypes {
     | '/about'
     | '/study-techniques'
     | '/study-techniques/active-recall'
-    | '/study-techniques/feynmann'
+    | '/study-techniques/feynman'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/study-techniques'
     | '/study-techniques/active-recall'
-    | '/study-techniques/feynmann'
+    | '/study-techniques/feynman'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/study-techniques'
     | '/study-techniques/active-recall'
-    | '/study-techniques/feynmann'
+    | '/study-techniques/feynman'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -117,11 +117,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/study-techniques/feynmann': {
-      id: '/study-techniques/feynmann'
-      path: '/feynmann'
-      fullPath: '/study-techniques/feynmann'
-      preLoaderRoute: typeof StudyTechniquesFeynmannRouteImport
+    '/study-techniques/feynman': {
+      id: '/study-techniques/feynman'
+      path: '/feynman'
+      fullPath: '/study-techniques/feynman'
+      preLoaderRoute: typeof StudyTechniquesFeynmanRouteImport
       parentRoute: typeof StudyTechniquesRoute
     }
     '/study-techniques/active-recall': {
@@ -136,12 +136,12 @@ declare module '@tanstack/react-router' {
 
 interface StudyTechniquesRouteChildren {
   StudyTechniquesActiveRecallRoute: typeof StudyTechniquesActiveRecallRoute
-  StudyTechniquesFeynmannRoute: typeof StudyTechniquesFeynmannRoute
+  StudyTechniquesFeynmanRoute: typeof StudyTechniquesFeynmanRoute
 }
 
 const StudyTechniquesRouteChildren: StudyTechniquesRouteChildren = {
   StudyTechniquesActiveRecallRoute: StudyTechniquesActiveRecallRoute,
-  StudyTechniquesFeynmannRoute: StudyTechniquesFeynmannRoute,
+  StudyTechniquesFeynmanRoute: StudyTechniquesFeynmanRoute,
 }
 
 const StudyTechniquesRouteWithChildren = StudyTechniquesRoute._addFileChildren(

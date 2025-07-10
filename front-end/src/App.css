@@ -118,3 +118,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+  /* Optional: If you want to use the default rotate-y-180 directly, ensure your
+     tailwind.config.js has arbitrary values enabled or define it.
+     For simplicity, explicitly defining it here works. */
+}
