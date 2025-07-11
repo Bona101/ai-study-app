@@ -1,8 +1,11 @@
 // src/routes/index.tsx
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
+
 
 export const Route = createFileRoute('/')({
-  component: Index,
+  beforeLoad: () => {
+    throw redirect({ to: '/study-techniques' }); // Redirect to your desired new route
+  },
 });
 
 function Index() {
@@ -12,3 +15,7 @@ function Index() {
     </div>
   );
 }
+
+
+
+
