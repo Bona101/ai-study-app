@@ -80,8 +80,9 @@ function RouteComponent() {
 
       if (response.ok) {
         setCurrentFileId(data.fileId);
-        setOutput(`File uploaded to Gemini! File ID: ${data.fileId}`);
+        setOutput(`File uploaded!`);
         console.log('Upload success:', data);
+        sendPrompt(data.fileId);
       } else {
         setOutput(`Error: ${data.error || 'Unknown upload error'}`);
         setIsError(true);
@@ -100,7 +101,7 @@ function RouteComponent() {
 
   };
 
-  const sendPrompt = async () => {
+  const sendPrompt = async (id: string) => {
     setPromptStatus('Sending prompt...');
     setGeminiResponse('');
 
@@ -112,7 +113,7 @@ function RouteComponent() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          fileId: currentFileId,
+          fileId: id,
           prompt: promptText,
         }),
       });
@@ -120,7 +121,7 @@ function RouteComponent() {
       const data = await response.json();
 
       if (response.ok) {
-        setPromptStatus('Prompt sent successfully!');
+        setPromptStatus('');
         setGeminiResponse(data.generatedContent);
       } else {
         setPromptStatus(`Prompt failed: ${data.error || 'Unknown error'}`);
@@ -156,9 +157,11 @@ function RouteComponent() {
 
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="mx-auto p-6 bg-white rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold mb-4 text-gray-800">File Upload</h2>
-
+{/* <p className='w-[80%] whitespace-pre-line'>
+  {"sdfdsdfdnvdnvkdfnvnf dmvndm,ncvmncxmcmvnm,cxn vvvvvvvvvvvvvvvvvvvvv vvvvvvvvvvvvvvvvvvvvvvbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbsf\nsdsfd\nfddf"}
+</p> */}
       <div className="mb-4">
         <input
           type="file"
@@ -180,19 +183,19 @@ function RouteComponent() {
         {isUploading ? 'Uploading...' : 'Upload File'}
       </button>
 
-      {currentFileId && (
+      {/* {currentFileId && (
         <div className="mt-4 p-3 bg-gray-100 rounded-md">
           <p className="text-sm font-medium text-gray-700">File ID:</p>
           <p className="text-sm text-gray-600 break-all">{currentFileId}</p>
         </div>
-      )}
+      )} */}
 
-      {output && (
+      {/* {output && (
         <div className={`mt-4 p-3 rounded-md ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
           }`}>
           <p className="text-sm">{output}</p>
         </div>
-      )}
+      )} */}
 
       {selectedFile && (
         <div className="mt-4 p-3 bg-blue-50 rounded-md">
@@ -202,23 +205,30 @@ function RouteComponent() {
         </div>
       )}
 
-      {promptStatus && <div className="status">{promptStatus}</div>}
+      {/* {promptStatus && <div className="status">{promptStatus}</div>} */}
+      {(output === "Uploading file..." || promptStatus === "Sending prompt...") && 
+      <div className='bg-gray-200 text-gray-400 p-3 rounded-lg'>
+        Loading...
+      </div>
+      }
 
       {geminiResponse && (
                     <div className="response">
-                        <h3>Gemini Response:</h3>
-                        <pre>{geminiResponse}</pre>
-                        <p>
+                        <h3>Output:</h3>
+                        <br />
+                        <hr />
+                        {/* <pre>{geminiResponse}</pre> */}
+                        <p className='w-[80%] whitespace-pre-line bg-blue-5'>
                           {geminiResponse}
                         </p>
-                        <button onClick={handleExport} style={{ marginTop: '10px' }}>Export Response to Word</button>
+                        <button onClick={handleExport} className='font-bold mt-10 bg-blue-500 p-3 rounded-lg'>Export Response to Word</button>
                     </div>
                 )}
 
-                <button onClick={sendPrompt} className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
+                {/* <button onClick={sendPrompt} className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
             : 'bg-blue-500 text-white hover:bg-blue-600'
-          }`}>sendPrompt</button>
+          }`}>sendPrompt</button> */}
     </div>
   );
 }

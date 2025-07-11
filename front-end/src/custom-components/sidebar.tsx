@@ -136,7 +136,7 @@ const openSidebar = () => {
 
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   return (
-    <div className={`bg-[#FFFBF7] text-[#000000] h-screen p-4 flex flex-col justify-between ${isSidebarOpen ? "w-64" : "w-16"} `}>
+    <div className={`sticky top-0 bg-[#FFFBF7] text-[#000000] h-screen p-4 flex flex-col justify-between ${isSidebarOpen ? "w-64  min-w-[250px] " : "w-16"} `}>
       <div>
         {sidebarSections.map((section) => (
           <Link to={section.to} onClick={openSidebar}><div className={`${sectionClasses} flex gap-1`} key={section.id}>

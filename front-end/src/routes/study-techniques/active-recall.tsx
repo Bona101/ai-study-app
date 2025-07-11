@@ -12,7 +12,7 @@ function activeRecallComponent() {
   const [output, setOutput] = useState<string>('');
   const [isError, setIsError] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
-  const [flashcards, setFlashcards] = useState<{id: number; question: string; answer: string}[]>([])
+  const [flashcards, setFlashcards] = useState<{ id: number; question: string; answer: string }[]>([])
   const uniqueRandomCharacters = "faafafdf7cddaa9"
 
   const promptText = `
@@ -66,7 +66,7 @@ function activeRecallComponent() {
 
       if (response.ok) {
         setCurrentFileId(data.fileId);
-        setOutput(`File uploaded to Gemini! File ID: ${data.fileId}`);
+        setOutput(`File uploaded!`);
         console.log('Upload success:', data);
       } else {
         setOutput(`Error: ${data.error || 'Unknown upload error'}`);
@@ -121,7 +121,7 @@ function activeRecallComponent() {
         console.error('Prompt error:', data);
       }
     } catch (error) {
-            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       setPromptStatus(`Network error during prompt: ${errorMessage}`);
       setGeminiResponse(`Network error: ${errorMessage}`);
       console.error('Fetch error during prompt:', error);
@@ -130,109 +130,111 @@ function activeRecallComponent() {
 
 
   return (
-    <div className=" mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">File Upload</h2>
+    <div className="w-full mx-auto p-6 bg-white rounded-lg shadow-lg">
+      {!flashcards[0] ?
+        (<div>
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">File Upload</h2>
 
-      <div className="mb-4">
-        <input
-          type="file"
-          onChange={handleFileChange}
-          accept="image/*,audio/*,video/*,application/pdf"
-          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          disabled={isUploading}
-        />
-      </div>
+          <div className="mb-4">
+            <input
+              type="file"
+              onChange={handleFileChange}
+              accept="image/*,audio/*,video/*,application/pdf"
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={isUploading}
+            />
+          </div>
 
-      <button
-        onClick={uploadFile}
-        disabled={isUploading || !selectedFile}
-        className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
-            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            : 'bg-blue-500 text-white hover:bg-blue-600'
-          }`}
-      >
-        {isUploading ? 'Uploading...' : 'Upload File'}
-      </button>
+          <button
+            onClick={uploadFile}
+            disabled={isUploading || !selectedFile}
+            className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-500 text-white hover:bg-blue-600'
+              }`}
+          >
+            {isUploading ? 'Uploading...' : 'Upload File'}
+          </button>
 
-      {currentFileId && (
-        <div className="mt-4 p-3 bg-gray-100 rounded-md">
-          <p className="text-sm font-medium text-gray-700">File ID:</p>
-          <p className="text-sm text-gray-600 break-all">{currentFileId}</p>
-        </div>
-      )}
+          {/* {currentFileId && (
+            <div className="mt-4 p-3 bg-gray-100 rounded-md">
+              <p className="text-sm font-medium text-gray-700">File ID:</p>
+              <p className="text-sm text-gray-600 break-all">{currentFileId}</p>
+            </div>
+          )} */}
 
-      {output && (
-        <div className={`mt-4 p-3 rounded-md ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
-          }`}>
-          <p className="text-sm">{output}</p>
-        </div>
-      )}
+          {output && (
+            <div className={`mt-4 p-3 rounded-md ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+              }`}>
+              <p className="text-sm">{output}</p>
+            </div>
+          )}
 
-      {selectedFile && (
-        <div className="mt-4 p-3 bg-blue-50 rounded-md">
-          <p className="text-sm font-medium text-blue-700">Selected File:</p>
-          <p className="text-sm text-blue-600">{selectedFile.name}</p>
-          <p className="text-xs text-blue-500">{(selectedFile.size / 1024).toFixed(2)} KB</p>
-        </div>
-      )}
+          {selectedFile && (
+            <div className="mt-4 p-3 bg-blue-50 rounded-md">
+              <p className="text-sm font-medium text-blue-700">Selected File:</p>
+              <p className="text-sm text-blue-600">{selectedFile.name}</p>
+              <p className="text-xs text-blue-500">{(selectedFile.size / 1024).toFixed(2)} KB</p>
+            </div>
+          )}
 
-      {promptStatus && <div className="status">{promptStatus}</div>}
+          {promptStatus && <div className="status">{promptStatus}</div>}
 
-      {geminiResponse && (
-                    <div className="response">
-                        <h3>Gemini Response:</h3>
-                        {/* <pre>{geminiResponse}</pre> */}
-                        {/* <p>
+          {geminiResponse && (
+            <div className="response">
+              <h3>Gemini Response:</h3>
+              {/* <pre>{geminiResponse}</pre> */}
+              {/* <p>
                           {geminiResponse}
                         </p> */}
-                        {/* <button onClick={handleExport} style={{ marginTop: '10px' }}>Export Response to Word</button> */}
-                    </div>
-                )}
+              {/* <button onClick={handleExport} style={{ marginTop: '10px' }}>Export Response to Word</button> */}
+            </div>
+          )}
 
-                {/* <button onClick={sendPrompt} className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
+          {/* <button onClick={sendPrompt} className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
             : 'bg-blue-500 text-white hover:bg-blue-600'
           }`}>sendPrompt</button> */}
 
+        </div>) : (<FlashcardApp cards={flashcards} />)}
+      {/* {flashcards[0] && (<FlashcardApp cards={flashcards}/>)} */}
 
-          {flashcards[0] && (<FlashcardApp cards={flashcards}/>)}
 
-          
     </div>
   );
 }
 
 function parseFlashcardString(str: string) {
-    const flashcards = [];
-    let idCounter = 1;
-    let currentQuestion = null; // To hold a question until its answer is found
+  const flashcards = [];
+  let idCounter = 1;
+  let currentQuestion = null; // To hold a question until its answer is found
 
-    // Split the string into individual lines and filter out empty lines
-    const lines = str.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+  // Split the string into individual lines and filter out empty lines
+  const lines = str.split('\n').map(line => line.trim()).filter(line => line.length > 0);
 
-    // Define the unique characters used in your prompt
-    const uniqueRandomCharacters = "faafafdf7cddaa9";
-    const qPrefix = `Q[${uniqueRandomCharacters}]:`;
-    const aPrefix = `A[${uniqueRandomCharacters}]:`;
+  // Define the unique characters used in your prompt
+  const uniqueRandomCharacters = "faafafdf7cddaa9";
+  const qPrefix = `Q[${uniqueRandomCharacters}]:`;
+  const aPrefix = `A[${uniqueRandomCharacters}]:`;
 
-    for (const line of lines) {
-        if (line.startsWith(qPrefix)) {
-            // This is a question line
-            const content = line.substring(qPrefix.length).trim();
-            currentQuestion = {
-                id: idCounter,
-                question: content,
-                answer: "" // Placeholder, will be filled by the next 'A' line
-            };
-        } else if (line.startsWith(aPrefix) && currentQuestion) {
-            // This is an answer line and we have a pending question
-            const content = line.substring(aPrefix.length).trim();
-            currentQuestion.answer = content;
-            flashcards.push(currentQuestion);
-            idCounter++; // Increment ID after a full card is formed
-            currentQuestion = null; // Reset for the next pair
-        }
+  for (const line of lines) {
+    if (line.startsWith(qPrefix)) {
+      // This is a question line
+      const content = line.substring(qPrefix.length).trim();
+      currentQuestion = {
+        id: idCounter,
+        question: content,
+        answer: "" // Placeholder, will be filled by the next 'A' line
+      };
+    } else if (line.startsWith(aPrefix) && currentQuestion) {
+      // This is an answer line and we have a pending question
+      const content = line.substring(aPrefix.length).trim();
+      currentQuestion.answer = content;
+      flashcards.push(currentQuestion);
+      idCounter++; // Increment ID after a full card is formed
+      currentQuestion = null; // Reset for the next pair
     }
+  }
 
-    return flashcards;
+  return flashcards;
 }

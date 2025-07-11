@@ -43,7 +43,7 @@ const FlashcardApp: React.FC<{ cards: { id: number; question: string; answer: st
     return (
         <div
             className="
-                min-h-screen flex flex-col items-center justify-center
+                min-h-screen flex flex-col items-center justify-between
                 bg-[var(--color-background)] text-[var(--color-foreground)]
                 p-4
             "
@@ -52,7 +52,7 @@ const FlashcardApp: React.FC<{ cards: { id: number; question: string; answer: st
                 question={currentCard?.question}
                 answer={currentCard?.answer}
             />
-            <div className="flex gap-4 mt-8"> {/* Added gap and top margin */}
+            <div className="flex gap-4 mt-8 z-10 mb-15"> {/* Added gap and top margin */}
                 <button
                     onClick={handlePrevious}
                     disabled={currentCardIndex === 0}

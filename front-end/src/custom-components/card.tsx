@@ -17,6 +17,8 @@ const Flashcard: React.FC<FlashcardProps> = ({ question, answer }) => {
     return (
         <div
             className={`
+                mt-15
+                flex justify-center items-center
                 relative w-100 h-48 cursor-pointer
                 shadow-lg rounded-lg transition-transform duration-600 ease-in-out
                 transform-gpu perspective-1000
@@ -28,7 +30,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ question, answer }) => {
             {/* Front of the card */}
             <div
                 className={`
-                    absolute w-full h-full flex justify-center items-center
+                    absolute ${(question.length >= answer.length && question.length > 500) || (answer.length >= question.length && answer.length > 50) ? 'w-[150%] h-[150%]' : 'w-full h-full'} flex justify-center items-center
                     bg-white text-gray-800 text-2xl text-center p-5
                     rounded-lg backface-hidden
                 `}
@@ -39,7 +41,7 @@ const Flashcard: React.FC<FlashcardProps> = ({ question, answer }) => {
             {/* Back of the card */}
             <div
                 className={`
-                    absolute w-full h-full flex justify-center items-center
+                    absolute ${(question.length >= answer.length && question.length > 500) || (answer.length >= question.length && answer.length > 50) ? 'w-[150%] h-[150%]' : 'w-full h-full'} flex justify-center items-center
                     bg-gray-800 text-white text-2xl text-center p-5
                     rounded-lg backface-hidden
                     rotate-y-180
@@ -52,3 +54,8 @@ const Flashcard: React.FC<FlashcardProps> = ({ question, answer }) => {
 };
 
 export default Flashcard;
+
+
+
+
+
