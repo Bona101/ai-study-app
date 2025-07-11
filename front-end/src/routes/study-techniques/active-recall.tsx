@@ -7,6 +7,8 @@ export const Route = createFileRoute('/study-techniques/active-recall')({
 })
 
 function activeRecallComponent() {
+  const [pastedText, setPastedText] = useState<string>('');
+  const [importSection, setImportSection] = useState<boolean>(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [currentFileId, setCurrentFileId] = useState<string>('');
   const [output, setOutput] = useState<string>('');
@@ -128,75 +130,217 @@ function activeRecallComponent() {
     }
   };
 
+  const formatFlashcardsForExport = (flashcards: any[]) => {
+    return flashcards.map(card => `${card.question}\t${card.answer}`).join('\n');
+  };
+
+  const handleExportFlashcards = () => {
+    if (flashcards.length === 0) {
+      alert("No flashcards to export!");
+      return;
+    }
+
+    const formattedData = formatFlashcardsForExport(flashcards);
+    const blob = new Blob([formattedData], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'flashcards.txt'; // Or .csv if you use commas
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url); // Clean up the URL object
+  };
+
+  const handleImportFlashcards = () => {
+    if (!pastedText.trim()) {
+      alert("Please paste text to import!");
+      return;
+    }
+
+    try {
+      const importedFlashcards = parseImportedFlashcards(pastedText);
+      if (importedFlashcards.length > 0) {
+        setFlashcards(importedFlashcards);
+        setOutput('Flashcards imported successfully!');
+        setIsError(false);
+        setPastedText(''); // Clear textarea after import
+      } else {
+        setOutput('No valid flashcards found in the pasted text. Ensure correct format (Question\\tAnswer).');
+        setIsError(true);
+      }
+    } catch (error) {
+      console.error('Error parsing imported flashcards:', error);
+      setOutput('Error importing flashcards. Please check the format.');
+      setIsError(true);
+    }
+  };
+
+  const parseImportedFlashcards = (text: string) => {
+    const parsed = [];
+    let idCounter = 1;
+    const lines = text.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+    for (const line of lines) {
+      // Assuming tab-separated values (TSV) for Q\tA
+      const parts = line.split('\t');
+      if (parts.length >= 2) {
+        parsed.push({
+          id: idCounter++,
+          question: parts[0].trim(),
+          answer: parts[1].trim()
+        });
+      }
+    }
+    return parsed;
+  };
+
+
+  const displayImportSection = () => {
+    setImportSection(true);
+  }
+  const displayUploadSection = () => {
+    setImportSection(false);
+  }
 
   return (
     <div className="w-full mx-auto p-6 bg-white rounded-lg shadow-lg">
-      {!flashcards[0] ?
-        (<div>
-          <h2 className="text-2xl font-bold mb-4 text-gray-800">File Upload</h2>
+      {!flashcards[0] ? (
 
-          <div className="mb-4">
-            <input
-              type="file"
-              onChange={handleFileChange}
-              accept="image/*,audio/*,video/*,application/pdf"
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isUploading}
-            />
+        importSection ? (<div>
+          {/* // ... after the file upload and prompt status elements */}
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Import Flashcards from Text</h2>
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              rows={6}
+              placeholder="Paste your flashcards here (e.g., Question\tAnswer\nQuestion2\tAnswer2)"
+              value={pastedText}
+              onChange={(e) => setPastedText(e.target.value)}
+            ></textarea>
+            <div className=''>
+
+              <button
+                onClick={handleImportFlashcards}
+                disabled={!pastedText.trim()}
+                className={`mt-4 w-full py-2 px-4 rounded-md font-medium transition-colors ${!pastedText.trim()
+                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  : 'bg-purple-500 text-white hover:bg-purple-600'
+                  }`}
+              >
+                Import Flashcards
+              </button>
+            </div>
+            <button onClick={displayUploadSection} className='border p-3'>{"<- Upload File"}</button>
           </div>
+        </div>
 
-          <button
-            onClick={uploadFile}
-            disabled={isUploading || !selectedFile}
-            className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-500 text-white hover:bg-blue-600'
-              }`}
-          >
-            {isUploading ? 'Uploading...' : 'Upload File'}
-          </button>
 
-          {/* {currentFileId && (
+        ) :
+          (<div>
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">File Upload</h2>
+
+            <div className="mb-4">
+              <input
+                type="file"
+                onChange={handleFileChange}
+                accept="image/*,audio/*,video/*,application/pdf"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={isUploading}
+              />
+            </div>
+
+            <button
+              onClick={uploadFile}
+              disabled={isUploading || !selectedFile}
+              className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
+            >
+              {isUploading ? 'Uploading...' : 'Upload File'}
+            </button>
+
+            {/* {currentFileId && (
             <div className="mt-4 p-3 bg-gray-100 rounded-md">
               <p className="text-sm font-medium text-gray-700">File ID:</p>
               <p className="text-sm text-gray-600 break-all">{currentFileId}</p>
             </div>
           )} */}
+{/* 
+            {output && (
+              <div className={`mt-4 p-3 rounded-md ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
+                }`}>
+                <p className="text-sm">{output}</p>
+              </div>
+            )} */}
 
-          {output && (
-            <div className={`mt-4 p-3 rounded-md ${isError ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'
-              }`}>
-              <p className="text-sm">{output}</p>
-            </div>
-          )}
+            {selectedFile && (
+              <div className="mt-4 p-3 bg-blue-50 rounded-md">
+                <p className="text-sm font-medium text-blue-700">Selected File:</p>
+                <p className="text-sm text-blue-600">{selectedFile.name}</p>
+                <p className="text-xs text-blue-500">{(selectedFile.size / 1024).toFixed(2)} KB</p>
+              </div>
+            )}
 
-          {selectedFile && (
-            <div className="mt-4 p-3 bg-blue-50 rounded-md">
-              <p className="text-sm font-medium text-blue-700">Selected File:</p>
-              <p className="text-sm text-blue-600">{selectedFile.name}</p>
-              <p className="text-xs text-blue-500">{(selectedFile.size / 1024).toFixed(2)} KB</p>
-            </div>
-          )}
+            {promptStatus && <div className="status">{promptStatus === "Sending prompt..." ? '' : promptStatus}</div>}
+            {(output === "Uploading file..." || promptStatus === "Sending prompt...") &&
+              <div className='bg-gray-200 text-gray-400 p-3 rounded-lg my-3'>
+                Loading...
+              </div>
+            }
 
-          {promptStatus && <div className="status">{promptStatus}</div>}
+            <button onClick={displayImportSection} className='border p-3' disabled={output === "Uploading file..." || promptStatus === "Sending prompt..."}>{"Import flashcards ->"}</button>
+            {/* // ... after the file upload and prompt status elements */}
+            {/* <div className="mt-8">
+            <h2 className="text-2xl font-bold mb-4 text-gray-800">Import Flashcards from Text</h2>
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+              rows={6}
+              placeholder="Paste your flashcards here (e.g., Question\tAnswer\nQuestion2\tAnswer2)"
+              value={pastedText}
+              onChange={(e) => setPastedText(e.target.value)}
+            ></textarea>
+            <button
+              onClick={handleImportFlashcards}
+              disabled={!pastedText.trim()}
+              className={`mt-4 w-full py-2 px-4 rounded-md font-medium transition-colors ${!pastedText.trim()
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-purple-500 text-white hover:bg-purple-600'
+                }`}
+            >
+              Import Flashcards
+            </button>
+          </div> */}
 
-          {geminiResponse && (
-            <div className="response">
-              <h3>Gemini Response:</h3>
-              {/* <pre>{geminiResponse}</pre> */}
-              {/* <p>
+            {geminiResponse && (
+              <div className="response">
+                <h3>Gemini Response:</h3>
+                {/* <pre>{geminiResponse}</pre> */}
+                {/* <p>
                           {geminiResponse}
                         </p> */}
-              {/* <button onClick={handleExport} style={{ marginTop: '10px' }}>Export Response to Word</button> */}
-            </div>
-          )}
+                {/* <button onClick={handleExport} style={{ marginTop: '10px' }}>Export Response to Word</button> */}
+              </div>
+            )}
 
-          {/* <button onClick={sendPrompt} className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
+            {/* <button onClick={sendPrompt} className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${isUploading || !selectedFile
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
             : 'bg-blue-500 text-white hover:bg-blue-600'
           }`}>sendPrompt</button> */}
 
-        </div>) : (<FlashcardApp cards={flashcards} />)}
+          </div>)) : (
+
+        (<div>
+          <FlashcardApp cards={flashcards} />
+          <button
+            onClick={handleExportFlashcards}
+            className="mt-4 w-full py-2 px-4 bg-green-500 text-white rounded-md font-medium hover:bg-green-600 transition-colors"
+          >
+            Export Flashcards
+          </button>
+        </div>
+        ))}
       {/* {flashcards[0] && (<FlashcardApp cards={flashcards}/>)} */}
 
 
@@ -238,3 +382,8 @@ function parseFlashcardString(str: string) {
 
   return flashcards;
 }
+
+
+
+
+
